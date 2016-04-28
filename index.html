@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>tab</title>
+		<style type="text/css">
+			input{width: 20px;height: 20px;background-color: #fff;}
+			#div1 div,#div2 div {width: 200px;height: 200px;border: 1px solid red;display: none;}
+			.active{background-color: #aaa;}
+		</style>
+	</head>
+	<body>
+
+		<div id="div1" >
+			<input type="button" class="active" value="1" />
+			<input type="button"  value="2" />
+			<input type="button"  value="3" />			
+			<div style="display: block;">1111</div>
+			<div>2222</div>
+			<div>3333</div>
+		</div>
+		<div id="div2" >
+			<input type="button" class="active" value="1" />
+			<input type="button"  value="2" />
+			<input type="button"  value="3" />			
+			<div style="display: block;">1111</div>
+			<div>2222</div>
+			<div>3333</div>
+		</div>
+		
+		<script src="js/jquery-1.10.2.min.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			$(function(){
+				var t1 = new Tab();
+				t1.init('div1',{});
+				var t2 = new Tab();
+				t2.init('div2',{event:'mouseover',delay:1000});	
+				t2.nowSel(2);
+			});				
+			function Tab(){
+				this.oParent = null;
+				this.aInput = null;
+				this.aDiv = null;
+				
+				this.settings = {
+					event:'click',
+					delay:0
+				};
+				
+			}
+			
+			Tab.prototype.init= function(oParent,opt){
+				$.extend(this.settings,opt);
+				this.oParent = $('#'+oParent);
+				this.aInput = this.oParent.find('input');
+				this.aDiv = this.oParent.find('div');
+				this.change();
+			};
+			
+			Tab.prototype.change = function(){
+				var that = this;
+				var timer = null;
+				this.aInput.on(that.settings.event,function(){
+					var _this = this;					
+					timer = setTimeout(show,that.settings.delay,_this);
+					//show(_this);
+				}).mouseout(function(){
+					clearTimeout(timer);
+				});
+				function show(obj){
+					that.aInput.attr('class','');
+					that.aDiv.css('display','none');
+					$(obj).attr('class','active');
+					that.aDiv.eq($(obj).index()).css('display','block');
+				}
+			};
+			Tab.prototype.nowSel = function(index){
+				this.aInput.attr('class','');
+				this.aDiv.css('display','none');
+				this.aInput.eq(index).attr('class','active');
+				this.aDiv.eq(index).css('display','block');
+			}
+
+	
+		</script>
+	</body>
+</html>
